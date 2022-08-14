@@ -1,0 +1,29 @@
+{
+  "name": "discial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install",
+    "dev": "ts-node packages/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "websocket": "^1.0.34",
+    "ws": "^8.8.1",
+    "ws-heartbeat": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/websocket": "^1.0.5",
+    "@types/ws": "^8.5.3",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "eslint": "^8.21.0",
+    "eslint-config-google": "^0.14.0",
+    "husky": "^8.0.1",
+    "ts-node": "^10.9.1"
+  }
+}
