@@ -13,17 +13,27 @@ import ws = require('ws');
 import {WebSocket} from '../server/WebSocket';
 // eslint-disable-next-line new-cap, object-curly-spacing, no-unused-vars
 import {DiscordGateway} from '../@api/link';
+import {eventsType} from '../constants';
 import {setWsHeartbeat} from "ws-heartbeat/client";
+import {EventEmitter} from "events";
+
 
 type options = {
   token: string;
   intents: string[] | number[];
 };
 
+type ValueOf<T> = T[keyof T];
+
+export declare interface Client extends EventEmitter {
+  on(event: ValueOf<eventsType>, listener: (...args: any[]) => void): this;
+}
 // eslint-disable-next-line require-jsdoc
-export class Client {
+export class Client extends EventEmitter {
+  private ws: WebSocket | undefined;
   private options: options | undefined;
   private gateway: string = DiscordGateway.init(10);
+  private data: string = '{}';
 
   // eslint-disable-next-line require-jsdoc
   /**
@@ -31,10 +41,13 @@ export class Client {
    * @param option 
    */
   constructor(option: options) {
+    super();
     Object.assign(this, {options: option});
   }
   // eslint-disable-next-line require-jsdoc
-  public login(): Promise<void> {
+  public 'sự kiện' = this.on;
+  // eslint-disable-next-line require-jsdoc
+  public 'kích hoạt'(): Promise<void> {
     return new Promise((res, rej) => {
       const {token, intents} = this.options!;
       this.active(token, intents);
@@ -57,15 +70,13 @@ export class Client {
     const {op, d, t} = JSON.parse(data.toString());
     switch (op) {
       case 0:
-        console.log('Authentication');
         break;
       case 10:
         const {heartbeat_interval} = d;
         this.keepAlive(ws, heartbeat_interval);
     }
-    if (t === 'MESSAGE_CREATE') {
-      console.log(JSON.parse(data.toString()));
-    }
+
+    if (t) this.data = data.toString();
   }
   /**
    * 
@@ -107,10 +118,12 @@ export class Client {
   private async active(token: string, intents: string[] | number[]) {
     const ws = new WebSocket(this.gateway);
     const payload = await this.payload(token, intents);
+    this.ws = ws;
     ws.on('open', () => this.open(ws, payload));
     ws.on('message', (data) => {
       this.message(ws, data, payload);
-      console.log(JSON.parse(data.toString()));
+      const {t} = JSON.parse(data.toString());
+      if (t) this.emit(eventsType[t as keyof typeof eventsType], JSON.parse(data.toString()) as ws.Data);
     });
   }
 };
