@@ -1,14 +1,14 @@
-import {dataReq as d} from '../interfaces/dataReq';
+import { dataReq as d } from "../interfaces/dataReq";
 
 export const dataReq: d = {
   op: 0,
   d: {
-    token: '',
-    intents: '',
+    token: "",
+    intents: "",
     properties: {
-      $os: '',
-      $browser: '',
-      $device: '',
+      $os: "",
+      $browser: "",
+      $device: "",
     },
   },
 };
