@@ -6,4 +6,9 @@ const client = new Client({
   intents: [5, 1, 3],
 });
 
-client.login();
+client['sự kiện']('Tạo tin nhắn', (message) => {
+  console.log(message);
+  console.log('true');
+});
+
+client['kích hoạt']();

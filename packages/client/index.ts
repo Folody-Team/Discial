@@ -140,6 +140,7 @@ export class Client extends EventEmitter {
     const ws = new WebSocket(this.gateway);
     const payload = await this.payload(token, intents);
     this.ws = ws;
+    this.ws = ws;
     ws.on('open', () => this.open(ws, payload));
     ws.on('message', (data) => {
       this.message(ws, data, payload);
