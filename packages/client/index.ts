@@ -9,6 +9,7 @@ import {
   OnMessageCreateEventNameArray,
   ReadyEventNameArray,
 } from "../constants/eventsType";
+import { dataReq } from "../constants/dataReq";
 
 type ValueOf<T> = T[keyof T];
 
@@ -33,8 +34,27 @@ class Client extends EventEmitter {
     super();
     Object.assign(this, { options: option });
   }
+
+  // eslint-disablse-next-line require-jsdoc
+  /**
+   * @public listening
+   */
+  public listening = this.on;
+  /**
+   * @public 'sự kiện'
+   */
   public "sự kiện" = this.on;
-  public "kích hoạt"(): Promise<void> {
+  // eslint-disable-ext-line require-jsdoc
+  /**
+   * @public 'kích hoạt'
+   */
+  public "kích hoạt" = this.origin;
+  /**
+   * @public login
+   */
+  public login = this.origin;
+
+  private origin(): Promise<void> {
     return new Promise((res, rej) => {
       const { token, intents } = this.options!;
       this.active(token, intents);
@@ -84,21 +104,19 @@ class Client extends EventEmitter {
    * @param intents
    * @returns
    */
+  private dataReq = dataReq;
+
   private async payload(token: string, intents: string[] | number[]) {
     const intent = Number(intents.join(""));
 
-    return JSON.stringify({
-      op: 2,
-      d: {
-        token: token,
-        intents: intent,
-        properties: {
-          $os: "linux",
-          $browser: "disco",
-          $device: "disco",
-        },
-      },
-    });
+    this.dataReq.op = 2;
+    this.dataReq.d.token = token || "";
+    this.dataReq.d.intents = intent;
+    this.dataReq.d.properties.$os = "linux" || "windows" || "mac";
+    this.dataReq.d.properties.$browser = "discial";
+    this.dataReq.d.properties.$device = "discial";
+
+    return JSON.stringify(this.dataReq);
   }
   /**
    *
