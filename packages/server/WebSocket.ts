@@ -2,7 +2,7 @@
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable valid-jsdoc */
 /* eslint-disable require-jsdoc */
-import ws = require('ws');
+import ws from 'ws';
 
 // eslint-disable-next-line no-unused-vars
 export class WebSocket extends ws {
