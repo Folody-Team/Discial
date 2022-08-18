@@ -2,12 +2,12 @@
 import {Client} from './client';
 
 const client = new Client({
-  token: 'TOKEN HERE',
+  token: process.env.DISCORD_TOKEN,
   intents: [5, 1, 3],
 });
 
 client['sự kiện']('Tin nhắn được tạo', (message) => {
-  console.log(message);
+  console.log(message.d.content);
   console.log('true');
 });
 

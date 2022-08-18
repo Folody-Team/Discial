@@ -1,4 +1,4 @@
 export type ClientOptions = {
-  token: string;
+  token?: string;
   intents: string[] | number[];
 };

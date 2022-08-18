@@ -10,6 +10,7 @@ import {
   ReadyEventNameArray,
 } from "../constants/eventsType";
 import { dataReq } from "../constants/dataReq";
+import { User } from "../user";
 
 type ValueOf<T> = T[keyof T];
 
@@ -26,6 +27,7 @@ class Client extends EventEmitter {
   private options: ClientOptions | undefined;
   private gateway: string = DiscordGateway.init(10);
   private data: string = "{}";
+  protected user: User | undefined;
   /**
    *
    * @param option
@@ -57,6 +59,10 @@ class Client extends EventEmitter {
   private origin(): Promise<void> {
     return new Promise((res, rej) => {
       const { token, intents } = this.options!;
+      if (typeof token != "string") {
+        rej(new Error("token is not string"));
+        return;
+      }
       this.active(token, intents);
     });
   }
@@ -67,9 +73,6 @@ class Client extends EventEmitter {
    */
   private async open(ws: WebSocket, payload: string) {
     ws.send(payload);
-    ReadyEventNameArray.forEach((event) => {
-      this.emit(event);
-    });
   }
   /**
    *
@@ -131,10 +134,25 @@ class Client extends EventEmitter {
     ws.on("message", (data) => {
       this.message(ws, data, payload);
       const { t } = JSON.parse(data.toString());
-      if (t) {
-        OnMessageCreateEventNameArray.forEach((event) => {
-          this.emit(event, JSON.parse(data.toString()) as ws.Data);
-        });
+      console.log(JSON.parse(data.toString()));
+      switch (t) {
+        case "READY":
+          this.user = new User(
+            this.options?.token as string,
+            JSON.parse(this.data).d.user
+          );
+          ReadyEventNameArray.forEach((event) => {
+            this.emit(event);
+          });
+          break;
+        case "MESSAGE_CREATE":
+          OnMessageCreateEventNameArray.forEach((event) => {
+            this.emit(event, JSON.parse(data.toString()) as ws.Data);
+          });
+          break;
+
+        default:
+          break;
       }
     });
   }

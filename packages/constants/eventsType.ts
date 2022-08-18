@@ -10,11 +10,12 @@ type OnMessageCreateEventName = {
   "Tin nhắn được tạo": OnMessageCreateFunc;
 };
 
-export const OnMessageCreateEventNameArray: Array<keyof OnMessageCreateEventName> = [
-  "MESSAGE_CREATE",
-  "Tin nhắn được tạo",
+export const OnMessageCreateEventNameArray: Array<
+  keyof OnMessageCreateEventName
+> = ["MESSAGE_CREATE", "Tin nhắn được tạo"];
+export const ReadyEventNameArray: Array<keyof ReadyEventName> = [
+  "READY",
+  "Đã kích hoạt",
 ];
-export const ReadyEventNameArray: Array<keyof ReadyEventName> = ["READY", "Đã kích hoạt"];
-
 
 export type IClientEvent = ReadyEventName & OnMessageCreateEventName;
