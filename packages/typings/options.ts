@@ -1,4 +1,4 @@
 export type options = {
-  token: string;
-  intents: string[] | number[];
+	token: string;
+	intents: string[] | number[];
 };
