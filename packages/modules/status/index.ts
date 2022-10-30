@@ -1,13 +1,13 @@
 type statusIn = {
   'trực tuyến': string;
-  'không công việc': string;
+  'chờ': string;
   'không làm phiền': string;
-  'không trực tuyến': string;
+  'ngoại tuyến': string;
 };
 
 export const statusIn: statusIn = {
   'trực tuyến': 'online',
-  'không công việc': 'idle',
+  'chờ': 'idle',
   'không làm phiền': 'dnd',
-  'không trực tuyến': 'offline',
+  'ngoại tuyến': 'offline',
 };
