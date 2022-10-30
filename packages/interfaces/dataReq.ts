@@ -4,9 +4,9 @@ export interface dataReq {
 		token: string;
 		intents: string | number | number[];
 		properties: {
-			$os: string;
-			$browser: string;
-			$device: string;
+			os: string;
+			browser: string;
+			device: string;
 		};
 	};
 }
