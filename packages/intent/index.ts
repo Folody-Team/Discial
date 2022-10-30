@@ -1,0 +1,1 @@
+export const defaultIntents = 1 << 0 << 9

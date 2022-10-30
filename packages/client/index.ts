@@ -1,167 +1,158 @@
-/* eslint-disable max-len */
-/* eslint-disable camelcase */
-/* eslint-disable quotes */
-/* eslint-disable no-unused-vars */
-/* eslint-disable valid-jsdoc */
-/* eslint-disable no-trailing-spaces */
-/* eslint-disable new-cap */
-/* eslint-disable require-jsdoc */
-/* eslint-disable semi */
-// eslint-disable-next-line new-cap, no-unused-vars
-import ws = require('ws');
+import ws from 'ws';
+import {defaultIntents} from '../intent'
+import { WebSocket } from '../server/WebSocket';
+import { DiscordGateway } from '../@api/link';
+import { EventEmitter } from 'events';
+import { ClientOptions } from '../typing/ClientOptions';
+import {
+	IClientEvent,
+	OnMessageCreateEventNameArray,
+	ReadyEventNameArray,
+} from '../constants/eventsType';
+import { dataReq } from '../constants/dataReq';
+import { User } from '../user';
 
-import {WebSocket} from '../server/WebSocket';
-// eslint-disable-next-line new-cap, object-curly-spacing, no-unused-vars
-import {DiscordGateway} from '../@api/link';
-import {eventsType} from '../constants';
-import {statusIn} from '../modules/status'
-import {EventEmitter} from "events";
-import {options} from "../typings/options";
+declare interface Client extends EventEmitter {
+	on<U extends keyof IClientEvent>(event: U, listener: IClientEvent[U]): this;
 
-type ValueOf<T> = T[keyof T];
-
-export declare interface Client extends EventEmitter {/** */
-  /**
-   * 
-   * @param event 
-   * @param listener 
-   */
-  on(event: ValueOf<eventsType>, listener: (...args: any[]) => void): this;
+	emit<U extends keyof IClientEvent>(
+		event: U,
+		...args: Parameters<IClientEvent[U]>
+	): boolean;
 }
-// eslint-disable-next-line require-jsdoc
-export class M\u00E1yT\u00EDnh extends EventEmitter {
-  /**
-   * @returns
-   * @private {ws, options, data, gateway}
-   * @memberof Client
-   * @description
-   */
-  private ws: WebSocket | undefined;
-  private options: options | undefined;
-  private gateway: string = DiscordGateway.init(10);
-  private data: string = '{}';
+class Client extends EventEmitter {
+	private ws: WebSocket | undefined;
+	private options: ClientOptions;
+	private gateway: string = DiscordGateway.init(9);
+	public data = '{}';
+	protected user: User | undefined;
+	/**
+	 *
+	 * @param option
+	 */
+	constructor(option: ClientOptions) {
+		super();
+		this.options = option;
+	}
 
-  // eslint-disable-next-line require-jsdoc
-  /**
-   * 
-   * @param option 
-   */
-  constructor(option = {} as options) {
-    super();
-    Object.assign(this, {options: option});
-  }
-  // eslint-disablse-next-line require-jsdoc
-  /**
-   * @public listening
-   */
-  public listening = this.on;
-  /**
-   * @public 'sự kiện'
-   */
-  public 'sự kiện' = this.on;
-  // eslint-disable-ext-line require-jsdoc
-  /**
-   * @public 'kích hoạt'
-   */
-  public 'kích hoạt' = this.origin;
-  /**
-   * @public login
-   */
-  public login = this.origin;
-  
-  public setStatus(status: string) {
-    if (!this.ws) return;
-    this.ws.send(JSON.stringify({
-      "op": 3,
-      "d": {
-        "status": status,
-      },
-    }));
-  }
+	// eslint-disablse-next-line require-jsdoc
+	/**
+	 * @public listening
+	 */
+	public listening = this.on;
+	/**
+	 * @public 'sự kiện'
+	 */
+	public 'sự kiện' = this.on;
+	// eslint-disable-ext-line require-jsdoc
+	/**
+	 * @public 'kích hoạt'
+	 */
+	public 'kích hoạt' = this.origin;
+	/**
+	 * @public login
+	 */
+	public login = this.origin;
 
-  private origin(): Promise<void> {
-    return new Promise((res, rej) => {
-      const {token, intents, status} = this.options!;
-      console.log(token, intents, status);
-      this.active(token, intents, status as keyof typeof statusIn)
-    });
-  }
-  /**
-   * 
-   * @param ws 
-   * @param payload 
-   */
-  private async open(ws: WebSocket, payload: string) {
-    ws.send(payload);
-  }
-  /**
-   * 
-   * @param ws 
-   * @param data 
-   */
-  private async message(ws: WebSocket, data: ws.RawData, payload: string) {
-    const {op, d, t} = JSON.parse(data.toString());
-    switch (op) {
-      case 0:
-        break;
-      case 10:
-        const {heartbeat_interval} = d;
-        this.keepAlive(ws, heartbeat_interval);
-    }
+	private origin(): Promise<void> {
+		return new Promise((res, rej) => {
+			const { token } = this.options;
+			if (typeof token != 'string') {
+				rej(new Error('token is not string'));
+				return;
+			}
+			this.active(token);
+		});
+	}
+	/**
+	 *
+	 * @param ws
+	 * @param payload
+	 */
+	private async open(ws: WebSocket, payload: string) {
+		ws.send(payload);
+	}
+	/**
+	 *
+	 * @param ws
+	 * @param data
+	 */
+	private async message(ws: WebSocket, data: ws.RawData, _payload: string) {
+		const { op, d, t } = JSON.parse(data.toString());
+		switch (op) {
+			case 0:
+				break;
+			case 10: {
+				const { heartbeat_interval } = d;
+				this.keepAlive(ws, heartbeat_interval);
+				break;
+			}
+			default:
+				break;
+		}
 
-    if (t) this.data = data.toString();
-  }
-  /**
-   * 
-   * @param ws 
-   * @param interval 
-   */
-  private async keepAlive(ws: WebSocket, interval: number) {
-    setInterval(() => {
-      ws.send(JSON.stringify({op: 1, d: null}));
-    }, interval);
-  }
-  /**
-   * 
-   * @param token 
-   * @param intents 
-   * @returns 
-   */
-    
-  private async payload(token: string, intents: string[] | number[], status: keyof typeof statusIn) {
-    const intent = Number(intents.join(''));
-    console.log(statusIn[status]);
-    return JSON.stringify({
-      op: 2,
-      d: {
-        token: token,
-        intents: intent,
-        properties: {
-          $os: 'linux',
-          $browser: 'discial',
-          $device: 'discial',
-        },
-        presence: {
-          status: statusIn[status],
-        },
-      },
-    });
-  }
-  /**
-   * 
-   * @param token 
-   * @param intents 
-   */
-  private async active(token: string, intents: string[] | number[], status: keyof typeof statusIn) {
-    const ws = new WebSocket(this.gateway);
-    const payload = await this.payload(token, intents, status);
-    this.ws = ws;
-    this.ws = ws;
-    ws.on('open', () => this.open(ws, payload));
-    ws.on('message', (data) => {
-      this.message(ws, data, payload);
-      const {t} = JSON.parse(data.toString());
-      if (t) this.emit(eventsType[t as keyof typeof eventsType], JSON.parse(data.toString()) as ws.Data);
-    });
-  }
-};
+		if (t) this.data = data.toString();
+	}
+	/**
+	 *
+	 * @param ws
+	 * @param interval
+	 */
+	private async keepAlive(ws: WebSocket, interval: number) {
+		setInterval(() => {
+			ws.send(JSON.stringify({ op: 1, d: null }));
+		}, interval);
+	}
+	/**
+	 *
+	 * @param token
+	 * @param intents
+	 * @returns
+	 */
+	private dataReq = dataReq;
+
+	private 'nếu' = function(dk: any, callback: void | any) {
+		if (dk) {
+			callback()
+		} else {
+			return
+		}
+	}
+
+	private async payload(token: string) {
+
+		this.dataReq.op = 2;
+		this.dataReq.d.token = token || '';
+		this.dataReq.d.intents = defaultIntents;
+		this.dataReq.d.properties.$os = 'linux';
+		this.dataReq.d.properties.$browser = 'discial';
+		this.dataReq.d.properties.$device = 'discial';
+
+		return JSON.stringify(this.dataReq);
+	}
+	/**
+	 *
+	 * @param token
+	 * @param intents
+	 */
+	private async active(token: string) {
+		const ws = new WebSocket(this.gateway);
+		const payload = await this.payload(token);
+		this.ws = ws;
+		ws.on('open', () => this.open(ws, payload));
+		ws.on('message', (data) => {
+			this.message(ws, data, payload);
+			/**
+			 * get t from data
+			 */
+			const { t } = JSON.parse(data.toString());
+
+			this['nếu'](t, async () =>{
+				// eslint-disable-next-line @typescript-eslint/no-var-requires
+				const { default: init } = await import(`../handler/${(t as string).toLowerCase()}`)
+				init(this, payload)
+			})
+		});
+	}
+}
+export { Client };

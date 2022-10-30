@@ -1,15 +1,16 @@
 /* eslint-disable max-len */
-import {MáyTính} from './client';
+import { Client } from './client';
 
-const máytính = new MáyTính({
-  token: 'OTk4MTQzNTQzMTc4NjkwNTkw.GLcQYP.FiZ9VQtxGS_wK6WiFiGBHjcfhghAI9mzxSWZnA',
-  intents: [5, 1, 3],
-  status: 'không công việc',
+const client = new Client({
+	token: process.env.TOKEN
 });
 
-máytính['sự kiện']('Tạo tin nhắn', (message) => {
-  console.log(message);
-  console.log('true');
+client['sự kiện']('Tin nhắn được tạo', (message) => {
+	console.log(`${message.author.username}: ${message.content}`);
 });
 
-máytính['kích hoạt']();
+client.on('Đã kích hoạt', () => {
+	console.log('sống rồi anh em');
+});
+
+client['kích hoạt']();
