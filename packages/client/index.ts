@@ -14,10 +14,9 @@ import {WebSocket} from '../server/WebSocket';
 // eslint-disable-next-line new-cap, object-curly-spacing, no-unused-vars
 import {DiscordGateway} from '../@api/link';
 import {eventsType} from '../constants';
-import {setWsHeartbeat} from "ws-heartbeat/client";
+import {statusIn} from '../modules/status'
 import {EventEmitter} from "events";
 import {options} from "../typings/options";
-import {dataReq} from "../constants/dataReq";
 
 type ValueOf<T> = T[keyof T];
 
@@ -30,7 +29,7 @@ export declare interface Client extends EventEmitter {/** */
   on(event: ValueOf<eventsType>, listener: (...args: any[]) => void): this;
 }
 // eslint-disable-next-line require-jsdoc
-export class Client extends EventEmitter {
+export class M\u00E1yT\u00EDnh extends EventEmitter {
   /**
    * @returns
    * @private {ws, options, data, gateway}
@@ -47,7 +46,7 @@ export class Client extends EventEmitter {
    * 
    * @param option 
    */
-  constructor(option: options) {
+  constructor(option = {} as options) {
     super();
     Object.assign(this, {options: option});
   }
@@ -69,11 +68,22 @@ export class Client extends EventEmitter {
    * @public login
    */
   public login = this.origin;
+  
+  public setStatus(status: string) {
+    if (!this.ws) return;
+    this.ws.send(JSON.stringify({
+      "op": 3,
+      "d": {
+        "status": status,
+      },
+    }));
+  }
 
   private origin(): Promise<void> {
     return new Promise((res, rej) => {
-      const {token, intents} = this.options!;
-      this.active(token, intents);
+      const {token, intents, status} = this.options!;
+      console.log(token, intents, status);
+      this.active(token, intents, status as keyof typeof statusIn)
     });
   }
   /**
@@ -117,28 +127,34 @@ export class Client extends EventEmitter {
    * @param intents 
    * @returns 
    */
-  private dataReq = dataReq
     
-  private async payload(token: string, intents: string[] | number[]) {
+  private async payload(token: string, intents: string[] | number[], status: keyof typeof statusIn) {
     const intent = Number(intents.join(''));
-
-    this.dataReq.op = 2;
-    this.dataReq.d.token = token || '';
-    this.dataReq.d.intents = intent;
-    this.dataReq.d.properties.$os = 'linux' || 'windows' || 'mac';
-    this.dataReq.d.properties.$browser = 'discial';
-    this.dataReq.d.properties.$device = 'discial';
-
-    return JSON.stringify(this.dataReq);
+    console.log(statusIn[status]);
+    return JSON.stringify({
+      op: 2,
+      d: {
+        token: token,
+        intents: intent,
+        properties: {
+          $os: 'linux',
+          $browser: 'discial',
+          $device: 'discial',
+        },
+        presence: {
+          status: statusIn[status],
+        },
+      },
+    });
   }
   /**
    * 
    * @param token 
    * @param intents 
    */
-  private async active(token: string, intents: string[] | number[]) {
+  private async active(token: string, intents: string[] | number[], status: keyof typeof statusIn) {
     const ws = new WebSocket(this.gateway);
-    const payload = await this.payload(token, intents);
+    const payload = await this.payload(token, intents, status);
     this.ws = ws;
     this.ws = ws;
     ws.on('open', () => this.open(ws, payload));

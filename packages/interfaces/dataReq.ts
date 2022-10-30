@@ -1,12 +1,17 @@
-export interface dataReq {
-  op: number;
+
+
+export type dataReq = {
+  op: number,
   d: {
-    token: string;
-    intents: string | number;
+    token: string,
+    intents: string | number,
     properties: {
-      $os: string;
-      $browser: string;
-      $device: string;
-    };
-  };
+      $os: string,
+      $browser: string,
+      $device: string,
+    },
+    presence: {
+      status: string,
+    },
+  },
 };
