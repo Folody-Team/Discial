@@ -133,9 +133,9 @@ class Client extends EventEmitter {
 		this.dataReq.op = 2;
 		this.dataReq.d.token = token || '';
 		this.dataReq.d.intents = defaultIntents;
-		this.dataReq.d.properties.$os = 'linux';
-		this.dataReq.d.properties.$browser = 'discial';
-		this.dataReq.d.properties.$device = 'discial';
+		this.dataReq.d.properties.os = 'linux';
+		this.dataReq.d.properties.browser = 'discial';
+		this.dataReq.d.properties.device = 'discial';
 
 		return JSON.stringify(this.dataReq);
 	}

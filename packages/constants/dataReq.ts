@@ -6,9 +6,9 @@ export const dataReq: d = {
 		token: '',
 		intents: 0,
 		properties: {
-			$os: '',
-			$browser: '',
-			$device: '',
+			os: '',
+			browser: '',
+			device: '',
 		},
 	},
 };
