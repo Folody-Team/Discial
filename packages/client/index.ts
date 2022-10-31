@@ -4,6 +4,7 @@ import { WebSocket } from '../server/WebSocket';
 import { DiscordGateway } from '../@api/link';
 import { EventEmitter } from 'events';
 import { ClientOptions } from '../typing/ClientOptions';
+import {initEvent} from '../functions/initEvent';
 import {
 	IClientEvent,
 	OnMessageCreateEventNameArray,
@@ -24,6 +25,7 @@ class Client extends EventEmitter {
 	private ws: WebSocket | undefined;
 	private options: ClientOptions;
 	private gateway: string = DiscordGateway.init(9);
+	private defaultEvent!: string;
 	public data = '{}';
 	protected user: User | undefined;
 	/**
@@ -35,6 +37,13 @@ class Client extends EventEmitter {
 		this.options = option;
 	}
 
+	public setEvent(dirname: string): any {
+		this.defaultEvent = dirname
+	}
+
+	public initEvent(): any {
+		initEvent(this.defaultEvent, this)
+	}
 	// eslint-disablse-next-line require-jsdoc
 	/**
 	 * @public listening

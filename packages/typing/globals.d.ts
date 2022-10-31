@@ -3,6 +3,7 @@ declare global {
 	namespace NodeJS {
 		// eslint-disable-next-line no-unused-vars
 		interface Global {
+			// eslint-disable-next-line @typescript-eslint/ban-types
 			Config: {};
 		}
 	}
