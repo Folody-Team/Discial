@@ -1,5 +1,5 @@
 import ws from 'ws';
-import {defaultIntents} from '../intent'
+import { defaultIntents } from '../intent'
 import { WebSocket } from '../server/WebSocket';
 import { DiscordGateway } from '../@api/link';
 import { EventEmitter } from 'events';
@@ -7,8 +7,6 @@ import { ClientOptions } from '../typing/ClientOptions';
 import {initEvent} from '../functions/initEvent';
 import {
 	IClientEvent,
-	OnMessageCreateEventNameArray,
-	ReadyEventNameArray,
 } from '../constants/eventsType';
 import { dataReq } from '../constants/dataReq';
 import { User } from '../user';
@@ -37,11 +35,11 @@ class Client extends EventEmitter {
 		this.options = option;
 	}
 
-	public setEvent(dirname: string): any {
+	public setEvent(dirname: string): void {
 		this.defaultEvent = dirname
 	}
 
-	public initEvent(): any {
+	public initEvent(): void {
 		initEvent(this.defaultEvent, this)
 	}
 	// eslint-disablse-next-line require-jsdoc
