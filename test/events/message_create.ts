@@ -1,4 +1,5 @@
-import {Events, Client} from '../../packages'
+import {Events, Client, verifyEvent} from '../../packages'
+@verifyEvent
 export default class extends Events {
   constructor(client: Client) {
     super()
