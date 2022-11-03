@@ -7,6 +7,7 @@
     </picture>
     <h1 align="center">Discial</h1>
   </a>
+  
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/-MADE%20BY%20FOLODY-0d0d0d?style=for-the-badge"> &nbsp;
@@ -14,3 +15,8 @@
   <img src="https://img.shields.io/github/issues/Folody-Team/Discial?style=for-the-badge&color=b1fa52">
   
 </p>
+
+---
+
+# Infomation
+A javascript and typescript package module for discord bot development, designed and developed with the simplest and most clean syntax. Maybe this is a promising package module.
