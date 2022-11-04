@@ -1,15 +1,11 @@
 import ws from 'ws';
-import {defaultIntents} from '../intent'
+import { defaultIntents } from '../intent';
 import { WebSocket } from '../server/WebSocket';
 import { DiscordGateway } from '../@api/link';
 import { EventEmitter } from 'events';
 import { ClientOptions } from '../typing/ClientOptions';
-import {initEvent} from '../functions/initEvent';
-import {
-	IClientEvent,
-	OnMessageCreateEventNameArray,
-	ReadyEventNameArray,
-} from '../constants/eventsType';
+import { initEvent } from '../functions/initEvent';
+import { IClientEvent } from '../constants/eventsType';
 import { dataReq } from '../constants/dataReq';
 import { User } from '../user';
 
@@ -28,7 +24,7 @@ class Client extends EventEmitter {
 	private gateway: string = DiscordGateway.init(9);
 	private defaultEvent!: string;
 
-	public token: string | undefined;
+	public token: string;
 	public data = '{}';
 	protected user: User | undefined;
 	/**
@@ -37,17 +33,16 @@ class Client extends EventEmitter {
 	 */
 	constructor(option: ClientOptions) {
 		super();
-		this.token = option.token
+		this.token = option.token || '';
 		this.options = option;
-		
 	}
 
 	public setEvent(dirname: string): any {
-		this.defaultEvent = dirname
+		this.defaultEvent = dirname;
 	}
 
 	public initEvent(): any {
-		initEvent(this.defaultEvent, this)
+		initEvent(this.defaultEvent, this);
 	}
 	// eslint-disablse-next-line require-jsdoc
 	/**
@@ -132,27 +127,26 @@ class Client extends EventEmitter {
 	private dataReq = dataReq;
 
 	/**
-	 * 
-	 * @param dk 
-	 * @param callback 
-	 * @returns 
+	 *
+	 * @param dk
+	 * @param callback
+	 * @returns
 	 */
-	private 'nếu' = function(dk: any, callback: void | any) {
+	private 'nếu' = function (dk: any, callback: void | any) {
 		if (dk) {
 			/**
 			 * call acllback function
 			 */
-			callback()
-		} else return
-	}
+			callback();
+		} else return;
+	};
 
 	/**
-	 * 
-	 * @param token 
-	 * @returns 
+	 *
+	 * @param token
+	 * @returns
 	 */
 	private async payload(token: string) {
-
 		this.dataReq.op = 2;
 		this.dataReq.d.token = token || '';
 		this.dataReq.d.intents = defaultIntents;
@@ -169,11 +163,9 @@ class Client extends EventEmitter {
 	 */
 	private async active(token: string) {
 		const ws = new WebSocket(this.gateway);
-		
 
 		const payload = await this.payload(token);
 		this.ws = ws;
-
 
 		///////////////////////////////////////
 		/**
@@ -191,21 +183,20 @@ class Client extends EventEmitter {
 			 */
 			const { t } = JSON.parse(data.toString());
 
-			this['nếu'](t, async () =>{
+			this['nếu'](t, async () => {
 				// eslint-disable-next-line @typescript-eslint/no-var-requires
 				try {
-					const { default: init } = await import(`../handler/${(t as string).toLowerCase()}`);
-						/**
-					 * call init 
+					const { default: init } = await import(
+						`../handler/${(t as string).toLowerCase()}`
+					);
+					/**
+					 * call init
 					 */
 					init(this, payload);
-					
-				} catch(err) {
-					return
+				} catch (err) {
+					return;
 				}
-
-				
-			})
+			});
 		});
 
 		///////////////////////////////////////
@@ -218,16 +209,10 @@ class Client extends EventEmitter {
 				/**
 				 * Connect to gateway
 				 */
-				this.active(token)
-
-			}, 1000)
-
-		})
-
-
-		
+				this.active(token);
+			}, 1000);
+		});
 	}
 }
-
 
 export { Client };

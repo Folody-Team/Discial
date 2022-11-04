@@ -7,7 +7,7 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"prepare": "husky install",
 		"dev": "ts-node test/index.ts",
-		"dev:nodemon": "nodemon packages/index.ts"
+		"dev:nodemon": "nodemon test/index.ts"
 	},
 	"keywords": [],
 	"author": "",
