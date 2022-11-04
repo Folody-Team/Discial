@@ -11,7 +11,7 @@ export interface UserInput {
 }
 
 export interface MemberInput {
-	roles: any[];
+	roles: string[];
 	premium_since: any;
 	pending: boolean;
 	nick: string | null;
@@ -29,5 +29,5 @@ export interface MessageAuthor {
     id: string;
     discriminator: string;
     avatar_decoration?: any;
-    avatar?: any;
+    avatar?: string;
 }

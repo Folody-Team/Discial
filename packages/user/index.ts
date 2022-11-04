@@ -19,7 +19,7 @@ export class User implements UserInput {
 
 export class Member implements MemberInput {
 	token: string;
-	roles!: any[];
+	roles!: string[];
 	premium_since: any;
 	pending!: boolean;
 	nick: string | null = null;
@@ -32,6 +32,7 @@ export class Member implements MemberInput {
 	constructor(token: string, MemberData: MemberInput) {
 		Object.assign(this, MemberData);
 		this.token = token;
+		console.log(this)
 	}
 	public static async GetMemberByUserIDAndGuildID(
 		id: string,
@@ -63,7 +64,7 @@ export class Author implements MessageAuthor {
 	id!: string;
 	discriminator!: string;
 	avatar_decoration!: null;
-	avatar!: null;
+	avatar?: string;
 	constructor(author: MessageAuthor, token: string) {
 		Object.assign(this, author);
 		this.token = token;
