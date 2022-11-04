@@ -1,33 +1,117 @@
 import { Member } from '../user';
+import fetch from 'node-fetch';
+import { Author } from '../user/index';
+import { BaseChannel } from '../channel';
 
-const message = {
-	type: 0,
-	tts: false,
-	timestamp: '2022-08-18T14:24:44.104000+00:00',
-	referenced_message: null,
-	pinned: false,
-	nonce: '1009830210230550528',
-	mentions: [],
-	mention_roles: [],
-	mention_everyone: false,
-	member: Member,
-	id: '1009830211266818108',
-	flags: 0,
-	embeds: [],
-	edited_timestamp: null,
-	content: '',
-	components: [],
-	channel_id: '955639718815621151',
-	author: {
-		username: 'người bình thường',
-		public_flags: 128,
-		id: '889140130105929769',
-		discriminator: '9157',
-		avatar_decoration: null,
-		avatar: null,
-	},
-	attachments: [],
-	guild_id: '911173438708785153',
-};
+export interface MessageRawData {
+	type: number;
+	tts: boolean;
+	timestamp: string;
+	referenced_message: null;
+	pinned: boolean;
+	nonce: string;
+	mentions: never[];
+	mention_roles: never[];
+	mention_everyone: boolean;
+	member: Member;
+	id: string;
+	flags: number;
+	embeds: never[];
+	edited_timestamp: null;
+	content: string;
+	components: never[];
+	channel_id: string;
+	author: Author;
+	attachments: never[];
+	guild_id: string;
+}
 
-export class Message {}
+export class Message implements MessageRawData {
+	type!: number;
+	tts!: boolean;
+	timestamp!: string;
+	referenced_message!: null;
+	pinned!: boolean;
+	nonce!: string;
+	mentions!: never[];
+	mention_roles!: never[];
+	mention_everyone!: boolean;
+	member!: Member;
+	id!: string;
+	flags!: number;
+	embeds!: never[];
+	edited_timestamp!: null;
+	content!: string;
+	components!: never[];
+	channel_id!: string;
+	author!: Author;
+	attachments!: never[];
+	guild_id!: string;
+	channel!: BaseChannel;
+	token: string;
+
+	constructor(
+		userData: MessageRawData & { channel: BaseChannel },
+		token: string
+	) {
+		Object.assign(this, userData);
+		this.token = token;
+	}
+	public static async GetMessageByID(
+		id: string,
+		channelID: string,
+		token: string
+	) {
+		const MessageData = await (
+			await fetch(
+				`https://discord.com/api/v10/channels/${channelID}/messages/${id}`,
+				{
+					method: 'GET',
+					headers: {
+						Authorization: `Bot ${token}`,
+						'Content-Type': 'application/json; charset=UTF-8',
+						'User-Agent':
+							'DiscordBot (https://github.com/Folody-Team/Discial, 1.0.0)',
+					},
+				}
+			)
+		).json();
+
+		const ChannelData = await BaseChannel.GetChannelById(
+			MessageData.channel_id,
+			token
+		);
+		const MemberData = await Member.GetMemberByUserIDAndGuildID(
+			MessageData.author.id,
+			ChannelData.guild_id,
+			token
+		);
+		const MessageAuthor = new Author(MessageData.author, token);
+		return new Message(
+			{
+				...MessageData,
+				channel: ChannelData,
+				member: MemberData,
+				author: MessageAuthor,
+			},
+			token
+		);
+	}
+	public async send(content:string) {
+		await fetch(
+			`https://discord.com/api/v10/channels/${this.channel_id}/messages`,
+			{
+				method: 'POST',
+				headers: {
+					Authorization: `Bot ${this.token}`,
+					'Content-Type': 'application/json; charset=UTF-8',
+					'User-Agent':
+						'DiscordBot (https://github.com/Folody-Team/Discial, 1.0.0)',
+				},
+				body: JSON.stringify({
+					content: content,
+				}),
+			}
+		);
+	}
+}

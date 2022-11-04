@@ -1,4 +1,5 @@
-import { MemberInput, UserInput } from '../typings/UserInput';
+import { MemberInput, UserInput, MessageAuthor } from '../typings/UserInput';
+import fetch from 'node-fetch';
 export class User implements UserInput {
 	verified!: boolean;
 	username!: string;
@@ -21,7 +22,7 @@ export class Member implements MemberInput {
 	roles!: any[];
 	premium_since: any;
 	pending!: boolean;
-	nick!: string;
+	nick: string | null = null;
 	mute!: boolean;
 	joined_at!: string;
 	flags!: number;
@@ -29,7 +30,42 @@ export class Member implements MemberInput {
 	communication_disabled_until!: null;
 	avatar?: string | undefined;
 	constructor(token: string, MemberData: MemberInput) {
-		Object.assign(this, { MemberData });
+		Object.assign(this, MemberData);
+		this.token = token;
+	}
+	public static async GetMemberByUserIDAndGuildID(
+		id: string,
+		guildId: string,
+		token: string
+	) {
+		const MemberData = await (
+			await fetch(
+				`https://discord.com/api/v10/guilds/${guildId}/members/${id}`,
+				{
+					method: 'GET',
+					headers: {
+						Authorization: `Bot ${token}`,
+						'Content-Type': 'application/json; charset=UTF-8',
+						'User-Agent':
+							'DiscordBot (https://github.com/Folody-Team/Discial, 1.0.0)',
+					},
+				}
+			)
+		).json();
+		return new Member(token, MemberData);
+	}
+}
+
+export class Author implements MessageAuthor {
+	token: string;
+	username!: string;
+	public_flags!: number;
+	id!: string;
+	discriminator!: string;
+	avatar_decoration!: null;
+	avatar!: null;
+	constructor(author: MessageAuthor, token: string) {
+		Object.assign(this, author);
 		this.token = token;
 	}
 }
