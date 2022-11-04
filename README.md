@@ -31,3 +31,7 @@ This package is still in development, so it won't be available on the npm site y
 <a href="https://github.com/Folody-Team/Discial/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Folody-Team/Discial" />
 </a>
+
+---
+
+## This package is created by vietnamese with love 🇻🇳 
