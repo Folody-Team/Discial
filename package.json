@@ -13,12 +13,14 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"node-fetch": "^2.6.7",
 		"websocket": "^1.0.34",
 		"ws": "^8.8.1",
 		"ws-heartbeat": "^1.2.0"
 	},
 	"devDependencies": {
 		"@types/node": "^18.7.5",
+		"@types/node-fetch": "^2.6.2",
 		"@types/websocket": "^1.0.5",
 		"@types/ws": "^8.5.3",
 		"@typescript-eslint/eslint-plugin": "^5.36.1",

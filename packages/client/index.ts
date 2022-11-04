@@ -21,11 +21,14 @@ declare interface Client extends EventEmitter {
 		...args: Parameters<IClientEvent[U]>
 	): boolean;
 }
+
 class Client extends EventEmitter {
 	private ws: WebSocket | undefined;
 	private options: ClientOptions;
 	private gateway: string = DiscordGateway.init(9);
 	private defaultEvent!: string;
+
+	public token: string | undefined;
 	public data = '{}';
 	protected user: User | undefined;
 	/**
@@ -34,7 +37,9 @@ class Client extends EventEmitter {
 	 */
 	constructor(option: ClientOptions) {
 		super();
+		this.token = option.token
 		this.options = option;
+		
 	}
 
 	public setEvent(dirname: string): any {
@@ -108,7 +113,13 @@ class Client extends EventEmitter {
 	 * @param interval
 	 */
 	private async keepAlive(ws: WebSocket, interval: number) {
+		/**
+		 * Delay to heartbeat
+		 */
 		setInterval(() => {
+			/**
+			 * Send to ws again
+			 */
 			ws.send(JSON.stringify({ op: 1, d: null }));
 		}, interval);
 	}
@@ -120,14 +131,26 @@ class Client extends EventEmitter {
 	 */
 	private dataReq = dataReq;
 
+	/**
+	 * 
+	 * @param dk 
+	 * @param callback 
+	 * @returns 
+	 */
 	private 'nếu' = function(dk: any, callback: void | any) {
 		if (dk) {
+			/**
+			 * call acllback function
+			 */
 			callback()
-		} else {
-			return
-		}
+		} else return
 	}
 
+	/**
+	 * 
+	 * @param token 
+	 * @returns 
+	 */
 	private async payload(token: string) {
 
 		this.dataReq.op = 2;
@@ -146,9 +169,21 @@ class Client extends EventEmitter {
 	 */
 	private async active(token: string) {
 		const ws = new WebSocket(this.gateway);
+		
+
 		const payload = await this.payload(token);
 		this.ws = ws;
+
+
+		///////////////////////////////////////
+		/**
+		 * open event in websocket
+		 */
 		ws.on('open', () => this.open(ws, payload));
+		///////////////////////////////////////
+		/**
+		 * message event in websocket
+		 */
 		ws.on('message', (data) => {
 			this.message(ws, data, payload);
 			/**
@@ -158,10 +193,41 @@ class Client extends EventEmitter {
 
 			this['nếu'](t, async () =>{
 				// eslint-disable-next-line @typescript-eslint/no-var-requires
-				const { default: init } = await import(`../handler/${(t as string).toLowerCase()}`)
-				init(this, payload)
+				try {
+					const { default: init } = await import(`../handler/${(t as string).toLowerCase()}`);
+						/**
+					 * call init 
+					 */
+					init(this, payload);
+					
+				} catch(err) {
+					return
+				}
+
+				
 			})
 		});
+
+		///////////////////////////////////////
+		/**
+		 * close event in websocket
+		 */
+
+		ws.on('close', () => {
+			setTimeout(() => {
+				/**
+				 * Connect to gateway
+				 */
+				this.active(token)
+
+			}, 1000)
+
+		})
+
+
+		
 	}
 }
+
+
 export { Client };
