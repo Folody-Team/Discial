@@ -37,11 +37,11 @@ class Client extends EventEmitter {
 		this.options = option;
 	}
 
-	public setEvent(dirname: string): any {
+	public setEvent(dirname: string) {
 		this.defaultEvent = dirname;
 	}
 
-	public initEvent(): any {
+	public initEvent() {
 		initEvent(this.defaultEvent, this);
 	}
 	// eslint-disablse-next-line require-jsdoc
