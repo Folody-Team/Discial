@@ -25,3 +25,9 @@ A javascript and typescript package module for discord bot development, designed
 # Status
 
 This package is still in development, so it won't be available on the npm site yet. We are very grateful and ready to welcome anyone to contribute to this project, please join if you want.
+
+# Contributors
+
+<a href="https://github.com/Folody-Team/Discial/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Folody-Team/Discial" />
+</a>
