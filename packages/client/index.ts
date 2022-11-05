@@ -4,8 +4,10 @@ import { WebSocket } from '../server/WebSocket';
 import { DiscordGateway } from '../@api/link';
 import { EventEmitter } from 'events';
 import { ClientOptions } from '../typing/ClientOptions';
-import { initEvent } from '../functions/initEvent';
-import { IClientEvent } from '../constants/eventsType';
+import {initEvent} from '../functions/initEvent';
+import {
+	IClientEvent,
+} from '../constants/eventsType';
 import { dataReq } from '../constants/dataReq';
 import { User } from '../user';
 
@@ -37,12 +39,13 @@ class Client extends EventEmitter {
 		this.options = option;
 	}
 
-	public setEvent(dirname: string) {
-		this.defaultEvent = dirname;
+	public setEvent(dirname: string): void {
+		this.defaultEvent = dirname
 	}
 
-	public initEvent() {
-		initEvent(this.defaultEvent, this);
+	public initEvent(): void {
+		initEvent(this.defaultEvent, this)
+
 	}
 	// eslint-disablse-next-line require-jsdoc
 	/**
