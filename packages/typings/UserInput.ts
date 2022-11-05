@@ -11,14 +11,23 @@ export interface UserInput {
 }
 
 export interface MemberInput {
-	roles: any[];
+	roles: string[];
 	premium_since: any;
 	pending: boolean;
-	nick: string;
+	nick: string | null;
 	mute: boolean;
 	joined_at: string;
 	flags: number;
 	deaf: boolean;
 	communication_disabled_until: null;
 	avatar?: string;
+}
+
+export interface MessageAuthor {
+    username: string;
+    public_flags: number;
+    id: string;
+    discriminator: string;
+    avatar_decoration?: any;
+    avatar?: string;
 }

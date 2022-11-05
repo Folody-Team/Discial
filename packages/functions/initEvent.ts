@@ -9,8 +9,10 @@ export function initEvent(dirname: string, client: Client) {
       data.forEach(async file => {
         if(file.includes('jsx') || file.includes('js') || file.includes('tsx') || file.includes('ts')) {
           const {default: Init} = await import(path.resolve(`${dirname}/${file}`))
-          new Init(client)
-
+          const event = new Init(client)
+          if(event.event == true) {
+            client.on(event.eventName, event.listener)
+          }
         }
       })
     })
