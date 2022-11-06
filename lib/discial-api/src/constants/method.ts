@@ -3,11 +3,13 @@ type method = {
   GET: string;
   PUT: string;
   DELETE: string;
+  PATCH: string;
 }
 
 export const method: method = {
   POST: 'POST',
   GET: 'GET',
   PUT: 'PUT',
-  DELETE: 'DELETE'
+  DELETE: 'DELETE',
+  PATCH: 'PATCH',
 }
