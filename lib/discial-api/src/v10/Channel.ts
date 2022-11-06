@@ -1,55 +1,58 @@
-import https, { RequestOptions } from 'node:https';
+import https, { RequestOptions } from 'https';
+import zlib from 'zlib';
 import {method, options} from '../.';
+import {rest} from '../utils/api';
 
-class Channel {
+/**
+ * @class Channel
+ */
+export class Channel {
   /**
    * @private {https, method}
    */
-  private https: typeof https = https;
-  private method: typeof method = method;
-
+  private static method: typeof method = method;
+  private static protocol = https;
 
   /**
+   * @protected {token, gzip}
+   */
+  protected static token = '';
+  protected static gzip = {
+    flush: zlib.Z_SYNC_FLUSH,
+		finishFlush: zlib.Z_SYNC_FLUSH
+  }
+  
+  /**
    * 
-   * @param endpoint 
+   * @param url 
+   * @param method 
+   * @param body 
    * @returns 
    */
-  private static reacteEndpoint(endpoint: string, options?: RequestOptions) {
-    
+  private static rest(url: string, method: string, body?: any) {
+
     /**
-     * Vietnamese comment: Ở đây nó sẽ trả về một object có kiểu là RequestOptions và sẽ hõ trợ cho request.
+     * @return {Promise<unknown>}
      */
-    return {
-      hostname: 'discord.com',
-      port: '443',
-      path: `/api/v10/${endpoint.replace('.', '/')}`,
-      ...options
-    } as RequestOptions
+    return rest(url, method, body, this.token)
+
   }
+
   /**
    * 
-   * @param options 
+   * @param token 
    */
-  static getChannel(options?: options, id?: string) {
-    let data = '';
-    this.prototype.https.request(this.reacteEndpoint(`channels.${id}`, {
-      method: this.prototype.method.GET,
-      headers: {
-        Authorization: `Bot ${options && options.token}`,
-				'Content-Type': 'application/json; charset=UTF-8',
-				'User-Agent': 'DiscordBot (https://github.com/Folody-Team/Discial, 1.0.0)',
-      }
-    }), (res) => {
-      res.on('data', (chunk) => {
-        data += chunk
-      })
-      res.on('close', () => {
-        data = JSON.parse(data)
-      })
-      
-    })
+  public static init(token: string) {
+    this.token = token;
+  }
 
-    return data
-
+  /**
+   * 
+   * @param id 
+   * @returns 
+   */
+  public static getChannel(id?: string) {
+    return this.rest(`channels.${id}`, this.method.GET)
+    
   }
 }
