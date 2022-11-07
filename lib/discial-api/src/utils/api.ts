@@ -16,7 +16,7 @@ function createEndpoint(endpoint: string) {
   /**
    * Vietnamese comment: Ở đây nó sẽ trả về một object có kiểu là RequestOptions và sẽ hõ trợ cho request.
    */
-  return `https://discord.com/api/v10/${endpoint.replace('.', '/')}`
+  return `https://discord.com/api/v10${endpoint}`
 }
 
 /**

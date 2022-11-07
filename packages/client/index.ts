@@ -3,7 +3,7 @@ import { defaultIntents } from '../intent';
 import { WebSocket } from '../server/WebSocket';
 import { DiscordGateway } from '../@api/link';
 import { EventEmitter } from 'events';
-import { ClientOptions } from '../typing/ClientOptions';
+import { ClientOptions } from '../typings/ClientOptions';
 import {initEvent} from '../functions/initEvent';
 import {
 	IClientEvent,
