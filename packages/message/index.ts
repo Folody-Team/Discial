@@ -48,7 +48,9 @@ export class Message implements MessageRawData {
 	attachments!: never[];
 	guild_id!: string;
 	channel!: BaseChannel;
-	token: string;
+	
+	
+	protected token: string;
 
 	constructor(
 		userData: MessageRawData & { channel: BaseChannel },

@@ -13,5 +13,6 @@
   "dependencies": {
     "discord-api-types": "^0.37.16",
     "ts-node": "^10.9.1"
-  }
+  },
+  "homepage": "https://github.com/Folody-Team/Discial"
 }
