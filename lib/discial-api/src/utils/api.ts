@@ -51,7 +51,7 @@ export function rest(url: string, method: string, body?: any, token?: string) {
         data += chunk.toString()
       })
       /**
-       * Vietnamese comment: Sự kiện kết thúc thì nó sẽ trarveef JSON data
+       * Vietnamese comment: Sự kiện kết thúc thì nó sẽ trả về JSON data
        */
       unzip.on('end', () => {
         data = JSON.parse(data);
