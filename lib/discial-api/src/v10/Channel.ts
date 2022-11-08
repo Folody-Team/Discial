@@ -11,7 +11,6 @@ export class Channel {
    * @private {https, method}
    */
   private static method: typeof method = method;
-  private static protocol = https;
 
   /**
    * @protected {token, gzip}
