@@ -4,10 +4,8 @@ import { WebSocket } from '../server/WebSocket';
 import { DiscordGateway } from '../@api/link';
 import { EventEmitter } from 'events';
 import { ClientOptions } from '../typings/ClientOptions';
-import {initEvent} from '../functions/initEvent';
-import {
-	IClientEvent,
-} from '../constants/eventsType';
+import { initEvent } from '../functions/initEvent';
+import { IClientEvent } from '../constants/eventsType';
 import { dataReq } from '../constants/dataReq';
 import { User } from '../user';
 
@@ -20,7 +18,7 @@ declare interface Client extends EventEmitter {
 	): boolean;
 }
 
-class Client extends EventEmitter {
+class Client<UCT = unknown> extends EventEmitter {
 	private ws: WebSocket | undefined;
 	private options: ClientOptions;
 	private gateway: string = DiscordGateway.init(9);
@@ -33,19 +31,28 @@ class Client extends EventEmitter {
 	 *
 	 * @param option
 	 */
+	public utilClass: UCT | undefined = undefined;
 	constructor(option: ClientOptions) {
 		super();
 		this.token = option.token || '';
 		this.options = option;
 	}
 
+	setUtilClass<T extends { [key: string]: unknown }>(
+		cb: (client: this) => T
+	): Client<T> {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		///@ts-ignore
+		this.utilClass = cb(this);
+		return this as unknown as Client<T>;
+	}
+
 	public setEvent(dirname: string): void {
-		this.defaultEvent = dirname
+		this.defaultEvent = dirname;
 	}
 
 	public initEvent(): void {
-		initEvent(this.defaultEvent, this)
-
+		initEvent(this.defaultEvent, this);
 	}
 	// eslint-disablse-next-line require-jsdoc
 	/**
